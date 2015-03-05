@@ -1,3 +1,2 @@
-import sys
-import os
-print("hello_world")
+import this
+print "I am Jay, a Python Programmer"

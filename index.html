@@ -1758,18 +1758,23 @@ jQuery(document).ready(function($) {
 <time datetime="2015-02-27T17:00:00+08:00" pubdate>Feb 27, 2015</time>    </p>
 </header>
 
-  <div class="entry-content"><h2>Choosing a Python Static Generator</h2>
-<p>a Python-based platform to replace Octopress: <a href="http://getpelican.com">Pelican</a>.</p>
-<h3>Pelican Markdown</h3>
-<p>a few plugins which add some syntactic sugar to the markdown
-language.  These are tags specified in
-<a href="https://github.com/Shopify/liquid">Liquid</a>-style syntax:</p>
-<div class="highlight"><pre><span class="p">{%</span><span class="w"> </span><span class="nt">tag</span><span class="w"> </span>arg<span class="mi">1</span><span class="w"> </span>arg<span class="mi">2</span><span class="w"> </span>...<span class="w"> </span><span class="p">%}</span>
+  <div class="entry-content"><h2>Introduction</h2>
+<p><a href="http://getpelican.com">Pelican</a> is a Python-based Static Blog Generator.</p>
+<h2>Markdown in Pelcian</h2>
+<p>Syntactic sugar plugins (tags) are added to the markdown language used in Pelican</p>
+<p>These tags are specified in <a href="https://github.com/Shopify/liquid">Liquid</a>-style syntax:</p>
+<div class="highlight"><pre>{% tag arg1 arg2 ... %}
 </pre></div>
 
 
-<h4>The Image Tag</h4>
-<p>The image tag allows insertion of an image ...</p></div>
+<h3>Image Tag</h3>
+<div class="highlight"><pre>{% img [position] /url/to/img.png [width] [height] [title] [alt] %}
+</pre></div>
+
+
+<p><img height="200" width="300" alt="Hope can set you free" title="Hope can set you free" src="/images/hope.jpg"></p>
+<h3>Video Tag</h3>
+<div class="highlight"><pre>{% video ...</pre></div></div>
   <footer>
     <a rel="full-article" href="https://noomrevlis.github.io/blog/2015/02/27/basic-usage-of-pelican/">Read On &crarr;</a>
   </footer>
@@ -1791,7 +1796,7 @@ language.  These are tags specified in
       
     <h1>Categories</h1>
     <ul id="recent_posts">
-        <li><a href="https://noomrevlis.github.io/category/practice.html">practice</a></li>
+        <li><a href="https://noomrevlis.github.io/category/blog-building.html">Blog Building</a></li>
     </ul>
   </section>
  

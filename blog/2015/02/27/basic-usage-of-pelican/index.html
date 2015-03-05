@@ -1756,89 +1756,56 @@ jQuery(document).ready(function($) {
 <time datetime="2015-02-27T17:00:00+08:00" pubdate>Feb 27, 2015</time>    </p>
 </header>
 
-  <div class="entry-content"><h2>Choosing a Python Static Generator</h2>
-<p>a Python-based platform to replace Octopress: <a href="http://getpelican.com">Pelican</a>.</p>
-<h3>Pelican Markdown</h3>
-<p>a few plugins which add some syntactic sugar to the markdown
-language.  These are tags specified in
-<a href="https://github.com/Shopify/liquid">Liquid</a>-style syntax:</p>
-<div class="highlight"><pre><span class="p">{%</span><span class="w"> </span><span class="nt">tag</span><span class="w"> </span>arg<span class="mi">1</span><span class="w"> </span>arg<span class="mi">2</span><span class="w"> </span>...<span class="w"> </span><span class="p">%}</span>
+  <div class="entry-content"><h2>Introduction</h2>
+<p><a href="http://getpelican.com">Pelican</a> is a Python-based Static Blog Generator.</p>
+<h2>Markdown in Pelcian</h2>
+<p>Syntactic sugar plugins (tags) are added to the markdown language used in Pelican</p>
+<p>These tags are specified in <a href="https://github.com/Shopify/liquid">Liquid</a>-style syntax:</p>
+<div class="highlight"><pre>{% tag arg1 arg2 ... %}
 </pre></div>
 
 
-<h4>The Image Tag</h4>
-<p>The image tag allows insertion of an image into the post with a
-specified size and position:</p>
-<div class="highlight"><pre><span class="p">{%</span><span class="w"> </span><span class="nt">img</span><span class="w"> </span>[position]<span class="w"> </span>/url/to/img.png<span class="w"> </span>[width]<span class="w"> </span>[height]<span class="w"> </span>[title]<span class="w"> </span>[alt]<span class="w"> </span><span class="p">%}</span>
+<h3>Image Tag</h3>
+<div class="highlight"><pre>{% img [position] /url/to/img.png [width] [height] [title] [alt] %}
 </pre></div>
 
 
-<p>Here is an example of the result of the image tag:</p>
-<p><img height="200" width="300" alt="A Galaxy" title="A Galaxy" src="/images/galaxy.jpg"></p>
-<h4>The Video Tag</h4>
-<p>The video tag allows embedding of an HTML5/Flash-compatible video
-into the post:</p>
-<div class="highlight"><pre><span class="p">{%</span><span class="w"> </span><span class="nt">video</span><span class="w"> </span>/url/to/video.mp<span class="mi">4</span><span class="w"> </span>[width]<span class="w"> </span>[height]<span class="w"> </span>[/url/to/poster.png]<span class="w"> </span><span class="p">%}</span>
+<p><img height="200" width="300" alt="Hope can set you free" title="Hope can set you free" src="/images/hope.jpg"></p>
+<h3>Video Tag</h3>
+<div class="highlight"><pre>{% video /url/to/video.mp4 [width] [height] [/url/to/poster.png] %}
 </pre></div>
 
 
-<p>Here is an example of the output of the video tag:</p>
 <p><div class="videobox">
-            <video width="240" height="180" preload="none" controls poster="/downloads/videos/animate_square.png"><source src='/downloads/videos/animate_square.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></div></p>
-<h4>The Code Include Tag</h4>
-<p>The <code>include_code</code> tag allows the insertion of formatted lines from
-a file into the post, with a title and a link to the source file:</p>
-<div class="highlight"><pre><span class="p">{%</span><span class="w"> </span><span class="nt">include_code</span><span class="w"> </span>filename.py<span class="w"> </span><span class="na">[lang</span><span class="o">:</span>python]<span class="w"> </span>[title]<span class="w"> </span><span class="p">%}</span>
+            <video width="240" height="180" preload="none" controls poster="/downloads/videos/drink.png"><source src='/downloads/videos/drink.mp4' type='video/mp4; codecs="avc1.42E01E, mp4a.40.2"'></video></div></p>
+<h3>Code Include Tag</h3>
+<div class="highlight"><pre>{% include_code filename.py [lang:python] [title] %}
 </pre></div>
 
 
-<p>Here is an example of the output of the code include tag:</p>
 <figure class='code'>
 <figcaption><span>Hello World hello_world.py</span> <a href='/downloads/code/hello_world.py'>download</a></figcaption>
 
-<div class="highlight"><pre><span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="k">print</span><span class="p">(</span><span class="s">&quot;hello_world&quot;</span><span class="p">)</span>
+<div class="highlight"><pre><span class="kn">import</span> <span class="nn">this</span>
+<span class="k">print</span> <span class="s">&quot;I am Jay, a Python Programmer&quot;</span>
 </pre></div>
 
 
 </figure>
 
 <h3>Inserting Notebooks</h3>
-<p><a href="https://github.com/jakevdp/pelican-plugins/blob/liquid_tags/liquid_tags/notebook.py">liquid_tags</a> Pelican plugin which allows the insertion of notebooks
-using the following syntax:</p>
-<div class="highlight"><pre><span class="p">{%</span><span class="w"> </span><span class="nt">notebook</span><span class="w"> </span>path/to/notebook.ipynb<span class="w"> </span><span class="na">[cells[i</span><span class="o">:</span>j]]<span class="w"> </span><span class="p">%}</span>
+<div class="highlight"><pre>{% notebook path/to/notebook.ipynb [cells[i:j]] %}
 </pre></div>
 
 
-<p>Here is the result: a short notebook inserted directly into the post:</p>
 <p>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="This-Is-An-IPython-Notebook">This Is An IPython Notebook<a class="anchor-link" href="#This-Is-An-IPython-Notebook">&#182;</a></h2>
-</div>
-</div>
-</div>
-
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Here is some code:</p>
-</div>
-</div>
-</div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[1]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class="highlight-ipynb"><pre class="ipynb"><span class="kn">import</span> <span class="nn">numpy</span>
-<span class="k">print</span> <span class="n">numpy</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<div class="highlight-ipynb"><pre class="ipynb"><span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="n">Image</span>
+<span class="n">Image</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s">&#39;http://www.blackice.com/images/RGB_Cube.jpg&#39;</span><span class="p">)</span>
 </pre></div>
 
 </div>
@@ -1849,29 +1816,17 @@ using the following syntax:</p>
 <div class="output">
 
 
-<div class="output_area"><div class="prompt"></div>
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>
-[ 0.25463203  0.55637185  0.02743774  0.57380221  0.52378531  0.95099357
-  0.70975568  0.19575853  0.589227    0.06959599]
+<div class="output_area"><div class="prompt output_prompt">Out[2]:</div>
 
-</pre>
+<div class="output_html rendered_html output_subarea output_pyout">
+<img src="http://www.blackice.com/images/RGB_Cube.jpg"/>
 </div>
+
 </div>
 
 </div>
 </div>
 
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p>Here is some math:</p>
-<p><span class="math">\[e^{i\pi} + 1 = 0\]</span></p>
-</div>
-</div>
 </div></p></div>
     <footer>
 <p class="meta">
@@ -1881,7 +1836,7 @@ using the following syntax:</p>
     </span>
   </span>
 <time datetime="2015-02-27T17:00:00+08:00" pubdate>Feb 27, 2015</time>  <span class="categories">
-    <a class='category' href='https://noomrevlis.github.io/category/practice.html'>practice</a>
+    <a class='category' href='https://noomrevlis.github.io/category/blog-building.html'>Blog Building</a>
   </span>
   <span class="categories">
     <a class="category" href="https://noomrevlis.github.io/tag/python.html">Python</a>  </span>
@@ -1908,7 +1863,7 @@ using the following syntax:</p>
       
     <h1>Categories</h1>
     <ul id="recent_posts">
-        <li><a href="https://noomrevlis.github.io/category/practice.html">practice</a></li>
+        <li><a href="https://noomrevlis.github.io/category/blog-building.html">Blog Building</a></li>
     </ul>
   </section>
  
