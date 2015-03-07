@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Author: Jay Ying &mdash; Moon River</title>
+  <title>Move Around Quickly in Vim &mdash; Moon River</title>
   <meta name="author" content="Jay Ying">
 
 
@@ -1749,42 +1749,95 @@ jQuery(document).ready(function($) {
   <div id="main">
     <div id="content">
 <div>
-	<article role="article">
-    	<header>
-    		<h1 class="entry-title">Author: Jay Ying</h1>
-    	</header>
+  <article class="hentry" role="article">
+<header>
+      <h1 class="entry-title">Move Around Quickly in Vim</h1>
+    <p class="meta">
+<time datetime="2014-03-23T21:16:00+08:00" pubdate>Mar 23, 2014</time>    </p>
+</header>
 
-    	<div id="blog-archives">
-            <h2>2014</h2>
-                    <article>
-                        <h1><a href="https://noomrevlis.github.io/blog/2014/03/23/move-around-quickly-in-vim/">Move Around Quickly in Vim</a></h1>
-                        <time datetime="2014-03-23 21:16:00+08:00" pubdate>
-                            <span class="month">Mar</span>
-                            <span class="day">23</span>
-                            <span class="year">2014</span>
-                        </time>
-                        <footer>
-                            <span class="categories">posted in
-                                <a class='category' href='https://noomrevlis.github.io/category/text-editor.html'>Text Editor</a>
-                            </span>
-                        </footer>
-                    </article>
-            <h2>2015</h2>
-                    <article>
-                        <h1><a href="https://noomrevlis.github.io/blog/2015/02/27/basic-usage-of-pelican/">Basic Usage of Pelican</a></h1>
-                        <time datetime="2015-02-27 17:00:00+08:00" pubdate>
-                            <span class="month">Feb</span>
-                            <span class="day">27</span>
-                            <span class="year">2015</span>
-                        </time>
-                        <footer>
-                            <span class="categories">posted in
-                                <a class='category' href='https://noomrevlis.github.io/category/blog-building.html'>Blog Building</a>
-                            </span>
-                        </footer>
-                    </article>
-	    </div>
-    </article>
+  <div class="entry-content"><p>It is natural for programmers to navigate files and make modifications.
+A powerful text editor and efficient editting skills can greatly increase the productivity.
+This article will discuss the navigation skills of Vim inside a file.</p>
+<h2>Getting Around Faster</h2>
+<p>Before making modifications to the text, usually, we need to move the cursor to a proper postion.
+For general text editors, this means the tedious switches between mouse and keyboard. 
+Vim resolves the cursor movement issues in an elegant approach by key bindings and various commands.
+Basically, the move actions in Vim have three different granularities: line, screen, and file. </p>
+<h3>Line Aspect</h3>
+<p>Move to the start &amp; end of a line: </p>
+<div class="highlight"><pre>0   →  To first character of line
+^   →  To first nonblank character of line
+$   →  To end of line, including blanks
+g_  →  To last nonblank character of line
+</pre></div>
+
+
+<p>Commands for moving word-wise:</p>
+<div class="highlight"><pre>w   →  Forward to start of next word
+b   →  Backward to start of current/previous word
+e   →  Forward to end of current/next word
+ge  →  **Backward to end of previous word**
+</pre></div>
+
+
+<p><img src="/images/vim-move-word-wise.png" title="word-wise motions" height="200" width="350" alt="word-wise motions" class="center"></p>
+<p>Find a Character in line:</p>
+<div class="highlight"><pre>f{char}   →  Forward to the next occurrence of char
+F{char}   →  Backward to the previous occurrence of char
+t{char}   →  Forward to end of current/next word
+T{char}   →  Backward to the character after the previous occurrence of char
+;         →  Repeat the last character-search command
+,         →  Reverse the last character-search command
+</pre></div>
+
+
+<p>word vs WORD :</p>
+<p><strong>word</strong>: A word consists of a sequence of letters, digits, and underscores, or as a sequence of other nonblank characters separated with whitespace.</p>
+<p><strong>WORD</strong>: The definition of a WORD is simpler: it consists of a sequence of nonblank characters separated with whitespace.</p>
+<p><img src="/images/vim-word-WORD.jpg" title="word vs WORD" height="200" width="300" alt="word vs WORD" class="center"></p>
+<p><strong>Note</strong>: For motion commands mentioned above, quantifiers can be used to modify them. For example: <code>3e</code> and <code>2fe</code>.
+However, counting is tedious, time-consuming and error prone. Don't count if you can repeat.</p>
+<h4>Screen Aspect</h4>
+<p>It is very common to jump between several lines. Say we need to change the name of a function, which is at the bottom of current screen.
+Instead of repeatedly typing <code>j</code> or scrolling down, we can use <code>H</code>, <code>M</code>, and <code>L</code> to arrive the nearby line.
+Since the target line is very close, we can reach the target line by typing <code>j</code> with a count number. The number is small and easy to count.
+And I use the following mnemonics:</p>
+<div class="highlight"><pre>H = high (top of screen)
+M = mid  (medium of screen)
+L = low  (bottom of screen)
+</pre></div>
+
+
+<p>For Emacs user, in the evil-mode of Emacs, there is a great feature called ace jump, which allows you to jump to a word by typing its' head character.
+This feature is really intutive way of navigation, which combine the visual recognition and typing.</p>
+<h4>File Aspect</h4>
+<p>Within a file, the navigation could be achieved by invoking incremental search. If the cursor is not under the word we want to search,
+then we need to type <code>/</code> and the word, otherwise, we can just use <code>*</code> command to search. And using <code>n</code> or <code>N</code> to search forward or backward.</p>
+<p>Bookmark can be used in advance when you foresee the backtrace. <code>Ctrl-O</code> is the one-off bookmark.</p>
+<p>In another case, given line number, we can use <code>linumG</code> to jump to the target line. This is very useful when debugging code.
+<code>gg</code> and <code>G</code> are two special forms of <code>linumG</code>.  They refer to the top of file and bottom of file.</p></div>
+    <footer>
+<p class="meta">
+  <span class="byline author vcard">
+    Posted by <span class="fn">
+        Jay Ying
+    </span>
+  </span>
+<time datetime="2014-03-23T21:16:00+08:00" pubdate>Mar 23, 2014</time>  <span class="categories">
+    <a class='category' href='https://noomrevlis.github.io/category/text-editor.html'>Text Editor</a>
+  </span>
+  <span class="categories">
+    <a class="category" href="https://noomrevlis.github.io/tag/vim.html">Vim</a>  </span>
+</p><div class="sharing">
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="https://noomrevlis.github.io/blog/2014/03/23/move-around-quickly-in-vim/" data-via="yingjie23" data-counturl="https://noomrevlis.github.io/blog/2014/03/23/move-around-quickly-in-vim/" >Tweet</a>
+</div>    </footer>
+  </article>
+
+  <section>
+    <h1>Comments</h1>
+    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
+  </section>
 </div>
 <aside class="sidebar">
   <section>
@@ -1828,6 +1881,9 @@ jQuery(document).ready(function($) {
   <script src="https://noomrevlis.github.io/theme/js/octopress.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	  var disqus_shortname = 'noomrevlis';
+          var disqus_identifier = '/blog/2014/03/23/move-around-quickly-in-vim/';
+          var disqus_url = 'https://noomrevlis.github.io/blog/2014/03/23/move-around-quickly-in-vim/';
+          var disqus_title = 'Move Around Quickly in Vim';
 	  (function() {
 	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
 	    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
