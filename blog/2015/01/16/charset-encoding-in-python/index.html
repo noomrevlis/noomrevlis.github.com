@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Split Logging File By dd &mdash; Moon River</title>
+  <title>Charset & Encoding in Python &mdash; Moon River</title>
   <meta name="author" content="Jay Ying">
 
 
@@ -1751,81 +1751,143 @@ jQuery(document).ready(function($) {
 <div>
   <article class="hentry" role="article">
 <header>
-      <h1 class="entry-title">Split Logging File By dd</h1>
+      <h1 class="entry-title">Charset & Encoding in Python</h1>
     <p class="meta">
-<time datetime="2015-02-02T14:12:00+08:00" pubdate>Feb 02, 2015</time>    </p>
+<time datetime="2015-01-16T13:30:00+08:00" pubdate>Jan 16, 2015</time>    </p>
 </header>
 
-  <div class="entry-content"><h2>Task Scenario Description</h2>
-<p>The latest information needs to be extracted from a logging file while the application is running.</p>
-<p>Limitations are listed as below:</p>
-<ul>
-<li>The target platform is a subset of QNX </li>
-<li>The size of logging file is over 100M.</li>
-<li>The shell(ksh) commands are not complete, eg. <code>split</code>, <code>tac</code></li>
-</ul>
-<h2>Solution</h2>
-<div class="highlight"><pre><span class="c">#!/bin/ksh</span>
+  <div class="entry-content"><h2>Background</h2>
+<p><strong>Character Set</strong> and <strong>Encoding System</strong> are different concepts, but often confused together.</p>
+<p>A character set is just a standardized set of chars or symbols. For example, English alphabet "a" to "z" can be a character set, while an encoding system is a standardized way to transform a sequence of characters (of a given char set) into a sequence of 0 and 1.</p>
+<h3>Character set</h3>
+<h4>ASCII</h4>
+<p>One of the simplest standardized character set is <a href="http://en.wikipedia.org/wiki/ASCII">"ASCII"</a>, ASCII contains 128 symbols. It includes all the {letters, digits, punctuations} you see on a PC keyboard. ASCII is designed for languages that use Latin alphabet only. ASCII cannot be used for Chinese characters </p>
+<h4>Unicode</h4>
+<p><a href="http://en.wikipedia.org/wiki/Unicode">Unicode's</a> character set includes ALL human language's written symbols. It includes the tens of thousands Chinese characters, math symbols, as well as characters of other languages. Actually, ASCII is a subset of Unicode. </p>
+<h3>Encoding System</h3>
+<p>What's Character Encoding?</p>
+<p>Any file has to go through encoding/decoding in order to be properly stored as file or displayed on screen. Suppose your language is Chinese, your computer needs a way to translate the character set of your language's writing system into a sequence of 1s and 0s. This transformation is called Character encoding.</p>
+<p>A encoding system defines a character set implicitly. Because it needs to define what characters it is designed to handle.<br />
+In the early days of computing, these two concepts are not clearly made distinct, and are just called a char set or encoding system. For example, ASCII does not really separate the concepts, since it's very simple, dealing with only 128 chars (including invisible "control characters" (code sequence)). Another example: HTML has <meta http-equiv="Content-Type" content="text/html;charset=utf-8">; the syntax contains the word “charset”, but it's actually about encoding, not charset. </p>
+<h4>Unicode's Encoding System</h4>
+<p>Unicode defines several encoding system. Each character in Unicode is given a unique ID. This id is a number (integer), and is called the char's code point.
+UTF-8 is the one which is usded widely in different fields.<br />
+As described in follow tables, the code point of chinese charater <code>汉</code> is <code>0000 6C49</code>. It matches the pattern in third row. After encoding with UTF-8, the byte string is <code>E6 B1 89</code>.</p>
+<div class="highlight"><pre>code point of &quot;汉&quot;   ---&gt;  0000 6C49
 
-<span class="nv">log_size</span><span class="o">=</span>0
-<span class="nv">log_size</span><span class="o">=</span><span class="sb">`</span>du -k logfile_name <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="sb">`</span>
-<span class="nb">echo</span> <span class="s2">&quot;The size of logfile_name is </span><span class="nv">$log_size</span><span class="s2"> k&quot;</span>
+range of code point |     pattern of utf-8 encoding system
+         HEX        |             BIN
+--------------------+---------------------------------------------
+0000 0000-0000 007F | 0xxxxxxx
+0000 0080-0000 07FF | 110xxxxx 10xxxxxx
+0000 0800-0000 FFFF | 1110xxxx 10xxxxxx 10xxxxxx
+0001 0000-0010 FFFF | 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
 
-<span class="nv">skip_size</span><span class="o">=</span><span class="k">$((</span><span class="nv">$log_size</span> <span class="o">-</span> <span class="m">64</span><span class="k">))</span>
-dd <span class="k">if</span><span class="o">=</span>logfile_name <span class="nv">bs</span><span class="o">=</span>1k <span class="nv">count</span><span class="o">=</span><span class="m">64</span> <span class="nv">skip</span><span class="o">=</span><span class="nv">$skip_size</span> <span class="nv">of</span><span class="o">=</span>log_tmp 
-grep <span class="s1">&#39;keyword&#39;</span> log_tmp <span class="p">|</span> awk <span class="s1">&#39;NF{a=$0}END{print a}&#39;</span>
-rm log_tmp
+        6    C    4    9
+     0110 1100 0100 1001 
+ --------------------------
+     0110   110001   001001
+ 1110XXXX 10XXXXXX 10XXXXXX 
+ 11100110 10110001 10001001 
+    E   6    B   1    8   9
 </pre></div>
 
 
-<p>In order to reduce the response time, I do not want to search the whole file.
-So the most efficient way seems to look up from the end of file.
-However the environment does not have a reverse output command like <code>tac</code>.
-What appears in my mind is a temp file, the environment frustrate me again: no <code>split</code>.</p>
-<p>Fortunately, I find <code>dd</code>, an uncommon and old command, compared to <code>df</code> and <code>du</code>. Here just summarize its usage.</p>
-<div class="highlight"><pre>mnemonics:
-   ``dd`` :  disk divid
-   ``du`` :  disk used
-   ``df`` :  disk free
-
-PS: The name dd may be an allusion to the DD statement found in IBM&#39;s Job Control Language (JCL), where the acronym stands for &quot;Data Description&quot;.
-
-
-Syntax
-     dd [Options]
-
-Key
-   if=FILE
-      Input file : Read from FILE instead of standard input.
-
-   of=FILE
-      Output file : Write to FILE instead of standard output.  Unless `conv=notrunc&#39;
-      is given, `dd&#39; truncates FILE to zero bytes (or the size specified
-      with `seek=&#39;).
-
-   ibs=BYTES
-      Read BYTES bytes at a time.
-
-   obs=BYTES
-      Write BYTES bytes at a time.
-
-   bs=BYTES
-      Block size, both read and write BYTES bytes at a time.  This overrides `ibs&#39;
-      and `obs&#39;.
-
-   skip=BLOCKS
-      Skip BLOCKS `ibs&#39;-byte blocks in the input file before copying.
-
-   count=BLOCKS
-      Copy BLOCKS `ibs&#39;-byte blocks from the input file, instead of
-      everything until the end of the file.
-
-The numeric-valued options (BYTES and BLOCKS) can be followed by a multiplier: b=512, c=1, w=2, xM=M, or any of the standard block size suffixes like `k&#39;=1024.
+<p>The result of above procedure can be verified in Python Interpreter:</p>
+<div class="highlight"><pre><span class="n">c</span> <span class="o">=</span> <span class="s">u&quot;汉&quot;</span>
+<span class="c"># &gt;&gt;&gt; u&quot;\u6c49&quot;</span>
+<span class="n">c</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>
+<span class="c"># &gt;&gt;&gt; &quot;\xe6\xb1\x89&quot;</span>
 </pre></div>
 
 
-<p><em>xM=M</em> seems be confusing, <code>M</code> does not refers to megabyte. Actually, it is a multiplier. If you want to use 1 Megabyte, you could let bs=1024x1024.</p>
-<p>For me, the option <code>skip</code> is the key, which allows me to only truncate the last part of the logging file. If using <code>split</code>, I have to wait until the file is divided to sevearl pieces.</p></div>
+<h2>Encoding in Python</h2>
+<p>In Python 3.x, everything is Unicode. The encoding issues mainly appear in Python 2.x.</p>
+<h3>Encoding of source file</h3>
+<p>If there are some special characters (chinese, noncommon symbols or other non-ASCII characters) in the Python source file,
+A declaration of encoding system should be placed in the head of source file.
+Otherwise, the interpreter does not know use which encoding system to handle the unexpected characters.
+This is because the default encoding used by interpreter is ASCII.</p>
+<div class="highlight"><pre># coding:utf8
+# coding=utf-8
+# -*- coding:utf-8 -*-      recommended, better looking
+</pre></div>
+
+
+<p>The delcaration of encoding system conventionally follows by SheBang notation,
+and contains the key words: "coding" and encoding system(utf-8, gbk, ...).</p>
+<p><em>Note:</em>, the encoding system in the declaration should be consistent with source file encoding. Generally, common IDE will take care of this. But users of text editors shall pay extra attention.</p>
+<h3>Encoding in console</h3>
+<p>There is a chance that print will raise below exception.</p>
+<div class="highlight"><pre>&gt;&gt;&gt; var = u&quot;中国&quot;
+&gt;&gt;&gt; print var 
+Traceback (most recent call last):
+  File &quot;&quot;, line 1, in 
+UnicodeEncodeError: &#39;ascii&#39; codec can&#39;t encode characters in position 835-844: ordinal not in range(128)
+</pre></div>
+
+
+<p>Such case usually stems from the worng system environment variable or configuration of console.
+In my assumption, print will do some encoding convertions according to the parameters of environment.</p>
+<p>You could put following statements in your <code>.bash_profile</code></p>
+<div class="highlight"><pre>export LANG=&quot;en_US.UTF-8&quot;
+export LC_ALL=en_US.UTF-8 # For OS X
+</pre></div>
+
+
+<p>If do not change the settings in the system, you could also try to add
+extra process of converting encoding system in the code.</p>
+<div class="highlight"><pre><span class="c"># eg. gb2312 is the encoding system of console</span>
+<span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span> 
+    <span class="k">print</span> <span class="n">var</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;gb2312&quot;</span><span class="p">)</span>
+</pre></div>
+
+
+<h3>Encoding inside the source code</h3>
+<p>Both str and unicode datatype are subclass of basestring.
+Actually, str is just byte sequence, which is encoded from the unicode characters.
+Strings that contain Unicode characters must start with u in front of the string.<br />
+str and unicode datatype can be converted to each other through str.decode() and unicode.encode().</p>
+<div class="highlight"><pre><span class="c">#-*- coding: utf-8 -*-</span>
+
+<span class="n">u_str</span> <span class="o">=</span> <span class="s">u&quot;I ♥ U&quot;</span>                       <span class="c"># unicode string, start with “u” or “ur”</span>
+<span class="k">print</span><span class="p">(</span><span class="n">u_str</span><span class="p">)</span>                           <span class="c"># I ♥ U</span>
+
+<span class="n">u_str</span> <span class="o">=</span> <span class="s">u&quot;汉&quot;</span>                          <span class="c"># len(u_str) == 1 &#39;\u6c49&#39;</span>
+<span class="n">utf8_str</span> <span class="o">=</span> <span class="s">&quot;汉&quot;</span>                        <span class="c"># len(utf8_str) == 3  &#39;\xe6\xb1\x89&#39;</span>
+
+<span class="n">u_str</span> <span class="o">=</span> <span class="n">utf8_str</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>       <span class="c"># utf-8 ---&gt; unicode</span>
+<span class="n">utf8_str</span> <span class="o">=</span> <span class="n">u_str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>       <span class="c"># unicode ---&gt; utf-8</span>
+
+<span class="n">u_str</span> <span class="o">=</span> <span class="nb">unicode</span><span class="p">(</span><span class="n">utf8_str</span><span class="p">,</span> <span class="s">&quot;utf-8&quot;</span><span class="p">)</span>     <span class="c"># utf-8 ---&gt; unicode</span>
+<span class="n">utf8_str</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">u_str</span><span class="p">)</span>                  <span class="c"># unicode ---&gt; utf-8  sys.setdefaultencoding(&quot;utf-8&#39;)</span>
+
+<span class="n">u_str</span> <span class="o">=</span> <span class="n">u_str</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>          <span class="c"># no meaning,  could throw exception.</span>
+<span class="n">utf8_str</span> <span class="o">=</span> <span class="n">utf8_str</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span>    <span class="c"># no meaning,  could throw exception.</span>
+</pre></div>
+
+
+<h3>Encoding in I/O</h3>
+<p>When reading from a file or other objecs return byte sequence, the encoding system should be choosen for decoding.
+On the other hand, before writing or sending a byte sequence to the target(function, file or socket), the process of
+encoding should also be considered.</p>
+<div class="highlight"><pre><span class="c">#-*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">codecs</span>  <span class="c"># recommend using codecs module</span>
+
+<span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;test.txt&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+    <span class="k">print</span> <span class="nb">type</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="c"># &lt;type &#39;unicode&#39;&gt;</span>
+
+<span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;test.txt&quot;</span><span class="p">,</span> <span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="s">u&quot;汉&quot;</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="c"># write unicode into file</span>
+
+<span class="k">with</span> <span class="n">codecs</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&quot;test.txt&quot;</span><span class="p">,</span> <span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">w</span><span class="p">:</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="s">u&quot;汉&quot;</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s">&quot;gbk&quot;</span><span class="p">)</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>  <span class="c"># automatically decode gbk to unicode, then encoding to utf-8.</span>
+
+<span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">)</span> <span class="c"># loading json file while specifying encoding system</span>
+</pre></div></div>
     <footer>
 <p class="meta">
   <span class="byline author vcard">
@@ -1833,13 +1895,13 @@ The numeric-valued options (BYTES and BLOCKS) can be followed by a multiplier: b
         Jay Ying
     </span>
   </span>
-<time datetime="2015-02-02T14:12:00+08:00" pubdate>Feb 02, 2015</time>  <span class="categories">
-    <a class='category' href='https://noomrevlis.github.io/category/unix-linux.html'>Unix & Linux</a>
+<time datetime="2015-01-16T13:30:00+08:00" pubdate>Jan 16, 2015</time>  <span class="categories">
+    <a class='category' href='https://noomrevlis.github.io/category/python-learning.html'>Python Learning</a>
   </span>
   <span class="categories">
-    <a class="category" href="https://noomrevlis.github.io/tag/shell.html">Shell</a>  </span>
+    <a class="category" href="https://noomrevlis.github.io/tag/python.html">Python</a>,    <a class="category" href="https://noomrevlis.github.io/tag/charset.html">Charset</a>  </span>
 </p><div class="sharing">
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/" data-via="yingjie23" data-counturl="https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/" >Tweet</a>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="https://noomrevlis.github.io/blog/2015/01/16/charset-encoding-in-python/" data-via="yingjie23" data-counturl="https://noomrevlis.github.io/blog/2015/01/16/charset-encoding-in-python/" >Tweet</a>
 </div>    </footer>
   </article>
 
@@ -1898,9 +1960,9 @@ The numeric-valued options (BYTES and BLOCKS) can be followed by a multiplier: b
   <script src="https://noomrevlis.github.io/theme/js/octopress.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	  var disqus_shortname = 'noomrevlis';
-          var disqus_identifier = '/blog/2015/02/02/shell-command-dd/';
-          var disqus_url = 'https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/';
-          var disqus_title = 'Split Logging File By dd';
+          var disqus_identifier = '/blog/2015/01/16/charset-encoding-in-python/';
+          var disqus_url = 'https://noomrevlis.github.io/blog/2015/01/16/charset-encoding-in-python/';
+          var disqus_title = 'Charset & Encoding in Python';
 	  (function() {
 	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
 	    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';

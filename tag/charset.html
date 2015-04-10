@@ -4,7 +4,7 @@
 <!--[if (gt IE 8)|(gt IEMobile 7)|!(IEMobile)|!(IE)]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  <title>Split Logging File By dd &mdash; Moon River</title>
+  <title>Tag: Charset &mdash; Moon River</title>
   <meta name="author" content="Jay Ying">
 
 
@@ -1749,120 +1749,35 @@ jQuery(document).ready(function($) {
   <div id="main">
     <div id="content">
 <div>
-  <article class="hentry" role="article">
-<header>
-      <h1 class="entry-title">Split Logging File By dd</h1>
-    <p class="meta">
-<time datetime="2015-02-02T14:12:00+08:00" pubdate>Feb 02, 2015</time>    </p>
-</header>
+	<article role="article">
+    	<header>
+    		<h1 class="entry-title">Tag: Charset</h1>
+    	</header>
 
-  <div class="entry-content"><h2>Task Scenario Description</h2>
-<p>The latest information needs to be extracted from a logging file while the application is running.</p>
-<p>Limitations are listed as below:</p>
-<ul>
-<li>The target platform is a subset of QNX </li>
-<li>The size of logging file is over 100M.</li>
-<li>The shell(ksh) commands are not complete, eg. <code>split</code>, <code>tac</code></li>
-</ul>
-<h2>Solution</h2>
-<div class="highlight"><pre><span class="c">#!/bin/ksh</span>
-
-<span class="nv">log_size</span><span class="o">=</span>0
-<span class="nv">log_size</span><span class="o">=</span><span class="sb">`</span>du -k logfile_name <span class="p">|</span> awk <span class="s1">&#39;{print $1}&#39;</span><span class="sb">`</span>
-<span class="nb">echo</span> <span class="s2">&quot;The size of logfile_name is </span><span class="nv">$log_size</span><span class="s2"> k&quot;</span>
-
-<span class="nv">skip_size</span><span class="o">=</span><span class="k">$((</span><span class="nv">$log_size</span> <span class="o">-</span> <span class="m">64</span><span class="k">))</span>
-dd <span class="k">if</span><span class="o">=</span>logfile_name <span class="nv">bs</span><span class="o">=</span>1k <span class="nv">count</span><span class="o">=</span><span class="m">64</span> <span class="nv">skip</span><span class="o">=</span><span class="nv">$skip_size</span> <span class="nv">of</span><span class="o">=</span>log_tmp 
-grep <span class="s1">&#39;keyword&#39;</span> log_tmp <span class="p">|</span> awk <span class="s1">&#39;NF{a=$0}END{print a}&#39;</span>
-rm log_tmp
-</pre></div>
-
-
-<p>In order to reduce the response time, I do not want to search the whole file.
-So the most efficient way seems to look up from the end of file.
-However the environment does not have a reverse output command like <code>tac</code>.
-What appears in my mind is a temp file, the environment frustrate me again: no <code>split</code>.</p>
-<p>Fortunately, I find <code>dd</code>, an uncommon and old command, compared to <code>df</code> and <code>du</code>. Here just summarize its usage.</p>
-<div class="highlight"><pre>mnemonics:
-   ``dd`` :  disk divid
-   ``du`` :  disk used
-   ``df`` :  disk free
-
-PS: The name dd may be an allusion to the DD statement found in IBM&#39;s Job Control Language (JCL), where the acronym stands for &quot;Data Description&quot;.
-
-
-Syntax
-     dd [Options]
-
-Key
-   if=FILE
-      Input file : Read from FILE instead of standard input.
-
-   of=FILE
-      Output file : Write to FILE instead of standard output.  Unless `conv=notrunc&#39;
-      is given, `dd&#39; truncates FILE to zero bytes (or the size specified
-      with `seek=&#39;).
-
-   ibs=BYTES
-      Read BYTES bytes at a time.
-
-   obs=BYTES
-      Write BYTES bytes at a time.
-
-   bs=BYTES
-      Block size, both read and write BYTES bytes at a time.  This overrides `ibs&#39;
-      and `obs&#39;.
-
-   skip=BLOCKS
-      Skip BLOCKS `ibs&#39;-byte blocks in the input file before copying.
-
-   count=BLOCKS
-      Copy BLOCKS `ibs&#39;-byte blocks from the input file, instead of
-      everything until the end of the file.
-
-The numeric-valued options (BYTES and BLOCKS) can be followed by a multiplier: b=512, c=1, w=2, xM=M, or any of the standard block size suffixes like `k&#39;=1024.
-</pre></div>
-
-
-<p><em>xM=M</em> seems be confusing, <code>M</code> does not refers to megabyte. Actually, it is a multiplier. If you want to use 1 Megabyte, you could let bs=1024x1024.</p>
-<p>For me, the option <code>skip</code> is the key, which allows me to only truncate the last part of the logging file. If using <code>split</code>, I have to wait until the file is divided to sevearl pieces.</p></div>
-    <footer>
-<p class="meta">
-  <span class="byline author vcard">
-    Posted by <span class="fn">
-        Jay Ying
-    </span>
-  </span>
-<time datetime="2015-02-02T14:12:00+08:00" pubdate>Feb 02, 2015</time>  <span class="categories">
-    <a class='category' href='https://noomrevlis.github.io/category/unix-linux.html'>Unix & Linux</a>
-  </span>
-  <span class="categories">
-    <a class="category" href="https://noomrevlis.github.io/tag/shell.html">Shell</a>  </span>
-</p><div class="sharing">
-  <a href="http://twitter.com/share" class="twitter-share-button" data-url="https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/" data-via="yingjie23" data-counturl="https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/" >Tweet</a>
-</div>    </footer>
-  </article>
-
-  <section>
-    <h1>Comments</h1>
-    <div id="disqus_thread" aria-live="polite"><noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div>
-  </section>
+    	<div id="blog-archives">
+            <h2>2015</h2>
+                    <article>
+                        <h1><a href="https://noomrevlis.github.io/blog/2015/01/16/charset-encoding-in-python/">Charset & Encoding in Python</a></h1>
+                        <time datetime="2015-01-16 13:30:00+08:00" pubdate>
+                            <span class="month">Jan</span>
+                            <span class="day">16</span>
+                            <span class="year">2015</span>
+                        </time>
+                        <footer>
+                            <span class="categories">posted in
+                                <a class='category' href='https://noomrevlis.github.io/category/python-learning.html'>Python Learning</a>
+                            </span>
+                        </footer>
+                    </article>
+	    </div>
+    </article>
 </div>
 <aside class="sidebar">
   <section>
     <h1>Recent Posts</h1>
     <ul id="recent_posts">
       <li class="post">
-          <a href="https://noomrevlis.github.io/blog/2015/02/27/basic-usage-of-pelican/">Basic Usage of Pelican</a>
-      </li>
-      <li class="post">
-          <a href="https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/">Split Logging File By dd</a>
-      </li>
-      <li class="post">
           <a href="https://noomrevlis.github.io/blog/2015/01/16/charset-encoding-in-python/">Charset & Encoding in Python</a>
-      </li>
-      <li class="post">
-          <a href="https://noomrevlis.github.io/blog/2014/03/23/move-around-quickly-in-vim/">Move Around Quickly in Vim</a>
       </li>
     </ul>
   </section>
@@ -1890,7 +1805,7 @@ The numeric-valued options (BYTES and BLOCKS) can be followed by a multiplier: b
 </aside>    </div>
   </div>
   <footer role="contentinfo"><p>
-    Copyright &copy;  2014&ndash;2015  Jay Ying &mdash;
+    Copyright &copy;  2015  Jay Ying &mdash;
   <span class="credit">Powered by <a href="http://getpelican.com">Pelican</a></span>
 </p></footer>
   <script src="https://noomrevlis.github.io/theme/js/modernizr-2.0.js"></script>
@@ -1898,9 +1813,6 @@ The numeric-valued options (BYTES and BLOCKS) can be followed by a multiplier: b
   <script src="https://noomrevlis.github.io/theme/js/octopress.js" type="text/javascript"></script>
 	<script type="text/javascript">
 	  var disqus_shortname = 'noomrevlis';
-          var disqus_identifier = '/blog/2015/02/02/shell-command-dd/';
-          var disqus_url = 'https://noomrevlis.github.io/blog/2015/02/02/shell-command-dd/';
-          var disqus_title = 'Split Logging File By dd';
 	  (function() {
 	    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
 	    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
